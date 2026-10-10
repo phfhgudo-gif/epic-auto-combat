@@ -15,17 +15,18 @@ jobs:
         with: { distribution: temurin, java-version: '17' }
       - uses: gradle/actions/setup-gradle@v3
         with: { gradle-version: '8.1.1' }
-      - name: Unpack epic-auto-combat.zip
+      - name: Unpack project
         run: |
-          rm -rf src
-          unzip -o epic-auto-combat.zip
-          ls
-      - run: gradle build --no-daemon
+          if [ -f epic-auto-combat.zip ]; then unzip -o epic-auto-combat.zip; fi
+          ls -R . | grep -v '^./.git' | head -40
+      - name: Build
+        working-directory: epic-auto-combat
+        run: gradle build --no-daemon
       - uses: actions/upload-artifact@v4
         with:
           name: epic-auto-combat-jar
-          path: build/libs/*.jar
+          path: epic-auto-combat/build/libs/*.jar
       - if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: build/libs/*.jar
+          files: epic-auto-combat/build/libs/*.jar

@@ -15,6 +15,11 @@ jobs:
         with: { distribution: temurin, java-version: '17' }
       - uses: gradle/actions/setup-gradle@v3
         with: { gradle-version: '8.1.1' }
+      - name: Unpack project.zip
+        run: |
+          rm -rf src
+          unzip -o project.zip
+          ls
       - run: gradle build --no-daemon
       - uses: actions/upload-artifact@v4
         with:
